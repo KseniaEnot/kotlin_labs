@@ -2,7 +2,7 @@ import task1_TextEditor.Alignment
 import task1_TextEditor.TextEditor
 
 fun main() {
-    /*val str = TextEditor("""
+    val str = TextEditor("""
        |Ночь, улица, фонарь, аптека,
        |Бессмысленный и тусклый свет.
        |Живи еще хоть четверть века —
@@ -11,13 +11,7 @@ fun main() {
        |И повторится всё, как встарь:
        |Ночь, ледяная рябь канала,
        |Аптека, улица, фонарь.
-    """,30)*/
-    val str = TextEditor("""
-       |Ночь, улица, фонарь, аптека,
-       |Бессмысленный и тусклый свет.
-       |Живи еще хоть четверть века —
-       |Всё будет так. Исхода нет.
-    """,12)
+    """,30)
     print(str.align(Alignment.LEFT))
     println("===".repeat(10))
     println(str.align())
