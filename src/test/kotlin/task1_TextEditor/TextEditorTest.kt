@@ -1,4 +1,5 @@
 package task1_TextEditor
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -44,18 +45,21 @@ internal class TextEditorTest {
        |Всё будет так. Исхода нет.
     """, 12
         )
-        assertEquals(str.align(Alignment.LEFT), "Ночь, улица,\n" +
-                "фонарь,     \n" +
-                "аптека, Бесс\n" +
-                "мысленный и \n" +
-                "тусклый     \n" +
-                "свет. Живи  \n" +
-                "еще хоть    \n" +
-                "четверть    \n" +
-                "века — Всё  \n" +
-                "будет так.  \n" +
-                "Исхода нет. \n")
+        assertEquals(
+            str.align(Alignment.LEFT), "Ночь, улица,\n" +
+                    "фонарь,     \n" +
+                    "аптека, Бесс\n" +
+                    "мысленный и \n" +
+                    "тусклый     \n" +
+                    "свет. Живи  \n" +
+                    "еще хоть    \n" +
+                    "четверть    \n" +
+                    "века — Всё  \n" +
+                    "будет так.  \n" +
+                    "Исхода нет. \n"
+        )
     }
+
     @Test
     fun medium2_Str() {
         val str = TextEditor(
@@ -66,7 +70,8 @@ internal class TextEditorTest {
        |Всё будет так. Исхода нет.
     """, 12
         )
-        assertEquals(str.align(Alignment.RIGHT),
+        assertEquals(
+            str.align(Alignment.RIGHT),
             "Ночь, улица,\n" +
                     "     фонарь,\n" +
                     "аптека, Бесс\n" +
@@ -77,8 +82,10 @@ internal class TextEditorTest {
                     "    четверть\n" +
                     "  века — Всё\n" +
                     "  будет так.\n" +
-                    " Исхода нет.\n")
+                    " Исхода нет.\n"
+        )
     }
+
     @Test
     fun medium3_Str() {
         val str = TextEditor(
@@ -89,17 +96,19 @@ internal class TextEditorTest {
        |Всё будет так. Исхода нет.
     """, 12
         )
-        assertEquals(str.align(Alignment.CENTER), "Ночь, улица,\n" +
-                "  фонарь,   \n" +
-                "аптека, Бесс\n" +
-                "мысленный и \n" +
-                "  тусклый   \n" +
-                " свет. Живи \n" +
-                "  еще хоть  \n" +
-                "  четверть  \n" +
-                " века — Всё \n" +
-                " будет так. \n" +
-                "Исхода нет. \n")
+        assertEquals(
+            str.align(Alignment.CENTER), "Ночь, улица,\n" +
+                    "  фонарь,   \n" +
+                    "аптека, Бесс\n" +
+                    "мысленный и \n" +
+                    "  тусклый   \n" +
+                    " свет. Живи \n" +
+                    "  еще хоть  \n" +
+                    "  четверть  \n" +
+                    " века — Всё \n" +
+                    " будет так. \n" +
+                    "Исхода нет. \n"
+        )
     }
 }
 
