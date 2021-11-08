@@ -1,5 +1,6 @@
 package task3_ShapeFactorImpl
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -8,7 +9,7 @@ interface Shape {
     fun calcPerimeter(): Double
 }
 
-class Circle(private val radius: Double) : Shape {
+class Circle(val radius: Double) : Shape {
     init {
         if (radius <= 0)
             throw IllegalArgumentException("Invalid argument")
@@ -23,7 +24,7 @@ class Circle(private val radius: Double) : Shape {
     }
 }
 
-class Square(private val sideA: Double) : Shape {
+class Square(val sideA: Double) : Shape {
     init {
         if (sideA <= 0)
             throw IllegalArgumentException("Invalid argument")
@@ -38,7 +39,7 @@ class Square(private val sideA: Double) : Shape {
     }
 }
 
-class Rectangle(private val sideA: Double, private val sideB: Double) : Shape {
+class Rectangle(val sideA: Double, val sideB: Double) : Shape {
     init {
         if (sideA <= 0 || sideB <= 0)
             throw IllegalArgumentException("Invalid argument")
@@ -53,7 +54,7 @@ class Rectangle(private val sideA: Double, private val sideB: Double) : Shape {
     }
 }
 
-class Triangle(private val sideA: Double, private val sideB: Double, private val sideC: Double) : Shape {
+class Triangle(val sideA: Double, val sideB: Double, val sideC: Double) : Shape {
     init {
         if (sideA <= 0 || sideB <= 0 || sideC <= 0 ||
             sideA + sideB <= sideC ||
@@ -74,10 +75,10 @@ class Triangle(private val sideA: Double, private val sideB: Double, private val
 }
 
 interface ShapeFactory {
-    fun createCircle(_Radius: Double): Circle
-    fun createSquare(_sideA: Double): Square
-    fun createRectangle(_sideA: Double, _sideB: Double): Rectangle
-    fun createTriangle(_sideA: Double, _sideB: Double, _sideC: Double): Triangle
+    fun createCircle(radius: Double): Circle
+    fun createSquare(sideA: Double): Square
+    fun createRectangle(sideA: Double, sideB: Double): Rectangle
+    fun createTriangle(sideA: Double, sideB: Double, sideC: Double): Triangle
     fun createRandomCircle(): Circle
     fun createRandomSquare(): Square
     fun createRandomRectangle(): Rectangle
@@ -87,46 +88,38 @@ interface ShapeFactory {
 
 class ShapeFactorImpl : ShapeFactory {
     private val maxValue = 999999.99999
-    override fun createCircle(_Radius: Double): Circle {
-        return Circle(_Radius)
+    override fun createCircle(radius: Double): Circle {
+        return Circle(radius)
     }
 
     override fun createRandomCircle(): Circle {
         return Circle(Random.nextDouble(0.1, maxValue))
     }
 
-    override fun createSquare(_sideA: Double): Square {
-        return Square(_sideA)
+    override fun createSquare(sideA: Double): Square {
+        return Square(sideA)
     }
 
     override fun createRandomSquare(): Square {
         return Square(Random.nextDouble(0.1, maxValue))
     }
 
-    override fun createRectangle(_sideA: Double, _sideB: Double): Rectangle {
-        return Rectangle(_sideA, _sideB)
+    override fun createRectangle(sideA: Double, sideB: Double): Rectangle {
+        return Rectangle(sideA, sideB)
     }
 
     override fun createRandomRectangle(): Rectangle {
         return Rectangle(Random.nextDouble(0.1, maxValue), Random.nextDouble(0.1, maxValue))
     }
 
-    override fun createTriangle(_sideA: Double, _sideB: Double, _sideC: Double): Triangle {
-        return Triangle(_sideA, _sideB, _sideC)
+    override fun createTriangle(sideA: Double, sideB: Double, sideC: Double): Triangle {
+        return Triangle(sideA, sideB, sideC)
     }
 
     override fun createRandomTriangle(): Triangle {
-        var sideA = Random.nextDouble(0.1, maxValue)
-        var sideB = Random.nextDouble(0.1, maxValue)
-        var sideC = Random.nextDouble(0.1, maxValue)
-        while (sideA + sideB <= sideC ||
-            sideA + sideC <= sideB ||
-            sideB + sideC <= sideA
-        ) {
-            sideA = Random.nextDouble(0.1, maxValue)
-            sideB = Random.nextDouble(0.1, maxValue)
-            sideC = Random.nextDouble(0.1, maxValue)
-        }
+        val sideA = Random.nextDouble(Double.MIN_VALUE, maxValue)
+        val sideB = Random.nextDouble(Double.MIN_VALUE, maxValue)
+        val sideC = Random.nextDouble(abs(sideB - sideA), sideA + sideB - Double.MIN_VALUE)
         return Triangle(sideA, sideB, sideC)
     }
 
