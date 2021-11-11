@@ -1,37 +1,23 @@
-import task3_ShapeFactorImpl.Shape
-import task3_ShapeFactorImpl.ShapeFactorImpl
+import task4_Matrix.Matrix
 
 fun main() {
-    var exampele: List<Shape> = listOf()
-    val factory = ShapeFactorImpl()
-    exampele = exampele.plus(factory.createCircle(10.0))
-    exampele = exampele.plus(factory.createSquare(18.3))
-    exampele = exampele.plus(factory.createRectangle(20.0, 12.0))
-    exampele = exampele.plus(factory.createTriangle(20.0, 12.0, 9.3))
-    exampele = exampele.plus(factory.createRandomCircle())
-    exampele = exampele.plus(factory.createRandomRectangle())
-    exampele = exampele.plus(factory.createRandomSquare())
-    exampele = exampele.plus(factory.createRandomTriangle())
-    exampele = exampele.plus(factory.createRandomShape())
-
-    var sumAr = 0.0
-    for (item in exampele)
-        sumAr += item.calcArea()
-    println("sum Area = $sumAr")
-    var sumPr = 0.0
-    for (item in exampele)
-        sumPr += item.calcPerimeter()
-    println("sum Perimeter = $sumPr")
-    var maxArShape: Shape = exampele[0]
-    for (item in exampele)
-        if (item.calcArea() > maxArShape.calcArea())
-            maxArShape = item
-    sumAr = maxArShape.calcArea()
-    println("max Area = $sumAr")
-    var maxPrShape: Shape = exampele[0]
-    for (item in exampele)
-        if (item.calcPerimeter() > maxPrShape.calcPerimeter())
-            maxPrShape = item
-    sumAr = maxPrShape.calcArea()
-    println("max Perimeter = $sumAr")
+    val exampele1 = Matrix(arrayOf(arrayOf(2.0,1.0),arrayOf(9.0,3.0)))
+    val exampele2 = Matrix(arrayOf(arrayOf(8.0,4.0),arrayOf(5.0,12.0)))
+    print((exampele1*exampele2).toString() + System.lineSeparator())
+    exampele2 += 1.2
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 -= 1.2
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 *= 2.0
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 /= 1.2
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 += exampele1
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 -= exampele1
+    print(exampele2.toString() + System.lineSeparator())
+    exampele2 *= exampele1
+    print(exampele2.toString() + System.lineSeparator())
+    val exampele3 = exampele1+exampele2*exampele2-exampele2
+    print(exampele3.toString() + System.lineSeparator())
 }
