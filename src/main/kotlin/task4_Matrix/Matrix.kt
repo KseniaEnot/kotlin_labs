@@ -18,10 +18,14 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun set(i: Int, j: Int, value: Double) {
+        if (i >= matrixArray.size || i < 0 || j >= matrixArray[0].size || j < 0)
+            throw IllegalArgumentException("Invalid argument")
         matrixArray[i][j] = value
     }
 
     operator fun get(i: Int, j: Int): Double {
+        if (i >= matrixArray.size || i < 0 || j >= matrixArray[0].size || j < 0)
+            throw IllegalArgumentException("Invalid argument")
         return matrixArray[i][j]
     }
 
