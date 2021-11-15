@@ -16,6 +16,7 @@ dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     implementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    implementation("log4j:log4j:1.2.17")
     testImplementation(kotlin("test"))
 }
 
