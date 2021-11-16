@@ -2,36 +2,39 @@ package task4_Matrix
 
 class Matrix(private val initMatrix: Array<Array<Double>>) {
     private var matrixArray: Array<Array<Double>> = arrayOf()
-    private val size: Array<Int>
+    val width: Int
+    val height: Int
 
     init {
         for (i in 1 until initMatrix.size)
             if (initMatrix[i - 1].size != initMatrix[i].size)
-                throw IllegalArgumentException("Invalid argument")
+                throw IllegalArgumentException("Invalid array passed")
         for (i in initMatrix.indices) {
             var array = arrayOf<Double>()
             for (j in initMatrix[i].indices)
                 array += initMatrix[i][j]
             matrixArray += array
         }
-        size = arrayOf(matrixArray.size, matrixArray[0].size)
+        width = matrixArray.size
+        height = matrixArray[0].size
     }
 
     operator fun set(i: Int, j: Int, value: Double) {
         if (i >= matrixArray.size || i < 0 || j >= matrixArray[0].size || j < 0)
-            throw IllegalArgumentException("Invalid argument")
+            throw IndexOutOfBoundsException("Index went out of matrix size")
         matrixArray[i][j] = value
     }
 
     operator fun get(i: Int, j: Int): Double {
         if (i >= matrixArray.size || i < 0 || j >= matrixArray[0].size || j < 0)
-            throw IllegalArgumentException("Invalid argument")
+            throw IndexOutOfBoundsException("Index went out of matrix size")
         return matrixArray[i][j]
     }
 
     operator fun plus(other: Matrix): Matrix {
-        if (matrixArray.size != other.size[0] || matrixArray[0].size != other.size[1])
-            throw IllegalArgumentException("Invalid argument")
+        //if (matrixArray.size != other.size[0] || matrixArray[0].size != other.size[1])
+        if (matrixArray.size != other.width || matrixArray[0].size != other.height)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         var newMatrixArray: Array<Array<Double>> = arrayOf()
         for (i in initMatrix.indices) {
             var array = arrayOf<Double>()
@@ -43,8 +46,8 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun plusAssign(other: Matrix) {
-        if (matrixArray.size != other.size[0] || matrixArray[0].size != other.size[1])
-            throw IllegalArgumentException("Invalid argument")
+        if (matrixArray.size != other.width || matrixArray[0].size != other.height)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         for (i in initMatrix.indices) {
             for (j in initMatrix[i].indices)
                 matrixArray[i][j] += other[i, j]
@@ -70,8 +73,8 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun minus(other: Matrix): Matrix {
-        if (matrixArray.size != other.size[0] || matrixArray[0].size != other.size[1])
-            throw IllegalArgumentException("Invalid argument")
+        if (matrixArray.size != other.width || matrixArray[0].size != other.height)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         var newMatrixArray: Array<Array<Double>> = arrayOf()
         for (i in initMatrix.indices) {
             var array = arrayOf<Double>()
@@ -83,8 +86,8 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun minusAssign(other: Matrix) {
-        if (matrixArray.size != other.size[0] || matrixArray[0].size != other.size[1])
-            throw IllegalArgumentException("Invalid argument")
+        if (matrixArray.size != other.width || matrixArray[0].size != other.height)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         for (i in initMatrix.indices) {
             for (j in initMatrix[i].indices)
                 matrixArray[i][j] -= other[i, j]
@@ -110,14 +113,14 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun times(other: Matrix): Matrix {
-        if (matrixArray[0].size != other.size[0])
-            throw IllegalArgumentException("Invalid argument")
+        if (matrixArray[0].size != other.width)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         var newMatrixArray: Array<Array<Double>> = arrayOf()
-        for (i in 0 until this.size[0]) {
+        for (i in 0 until this.width) {
             var array = arrayOf<Double>()
-            for (j in 0 until other.size[1]) {
+            for (j in 0 until other.height) {
                 var sum = 0.0
-                for (k in 0 until this.size[1])
+                for (k in 0 until this.height)
                     sum += matrixArray[i][k] * other[k, j]
                 array += sum
             }
@@ -127,14 +130,14 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     }
 
     operator fun timesAssign(other: Matrix) {
-        if (matrixArray[0].size != other.size[0])
-            throw IllegalArgumentException("Invalid argument")
+        if (matrixArray[0].size != other.width)
+            throw IllegalArgumentException("Incorrect matrix size for the operation")
         var newMatrixArray: Array<Array<Double>> = arrayOf()
-        for (i in 0 until this.size[0]) {
+        for (i in 0 until this.width) {
             var array = arrayOf<Double>()
-            for (j in 0 until other.size[1]) {
+            for (j in 0 until other.height) {
                 var sum = 0.0
-                for (k in 0 until this.size[1])
+                for (k in 0 until this.height)
                     sum += matrixArray[i][k] * other[k, j]
                 array += sum
             }
@@ -219,7 +222,8 @@ class Matrix(private val initMatrix: Array<Array<Double>>) {
     override fun hashCode(): Int {
         var result = initMatrix.contentDeepHashCode()
         result = 31 * result + matrixArray.contentDeepHashCode()
-        result = 31 * result + size.contentHashCode()
+        result = 31 * result + width
+        result = 31 * result + height
         return result
     }
 }

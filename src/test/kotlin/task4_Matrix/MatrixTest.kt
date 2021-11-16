@@ -32,7 +32,7 @@ internal class MatrixTest {
         try {
             exampele1 + exampele2
         } catch (e: IllegalArgumentException) {
-            assertEquals("Invalid argument", e.message)
+            assertEquals("Incorrect matrix size for the operation", e.message)
         }
     }
 
@@ -51,7 +51,7 @@ internal class MatrixTest {
         try {
             exampele1 += exampele2
         } catch (e: IllegalArgumentException) {
-            assertEquals("Invalid argument", e.message)
+            assertEquals("Incorrect matrix size for the operation", e.message)
         }
     }
 
@@ -82,7 +82,7 @@ internal class MatrixTest {
         try {
             exampele1 -= exampele2
         } catch (e: IllegalArgumentException) {
-            assertEquals("Invalid argument", e.message)
+            assertEquals("Incorrect matrix size for the operation", e.message)
         }
     }
 
@@ -129,7 +129,7 @@ internal class MatrixTest {
         try {
             exampele1 *= exampele2
         } catch (e: IllegalArgumentException) {
-            assertEquals("Invalid argument", e.message)
+            assertEquals("Incorrect matrix size for the operation", e.message)
         }
     }
 
