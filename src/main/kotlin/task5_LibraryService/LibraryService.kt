@@ -11,14 +11,14 @@ sealed class Status {
     object Restoration : Status()
 
     override fun toString(): String {
-        return when (this.javaClass) {
-            Available.javaClass -> "Available"
-            ComingSoon.javaClass -> "ComingSoon"
-            Restoration.javaClass -> "Restoration"
-            UsedBy(User("", "")).javaClass -> "UsedBy " + (this as UsedBy).user.toString()
-            else -> "unknown"
+        return when (this) {
+            Available -> "Available"
+            ComingSoon -> "ComingSoon"
+            Restoration -> "Restoration"
+            is UsedBy -> "UsedBy " + this.user.toString()
         }
     }
+
 }
 
 interface LibraryService {
@@ -43,57 +43,65 @@ interface LibraryService {
 class Library : LibraryService {
     private var users = listOf<User>()
     private var mutBookUsers = mutableMapOf<Book, User>()
-    private var mutBookStatus = mutableMapOf<Book, Status>()
-    private var logger = Logger.getLogger("Library created")
+    private val mutBookStatus = mutableMapOf<Book, Status>()
+    private val logger = Logger.getLogger("Library created")
 
     override fun registerUser(name: String, surname: String) {
         if (users.find { it.name == name && it.surname == surname } != null) {
-            logger.fatal("Trying to create an existing user $name $surname")
-            throw IllegalArgumentException("User already exists")
+            logger.error("Trying to create an existing user $name $surname")
+            throw IllegalStateException("User already exists")
         }
         logger.info("Successful user creation $name $surname")
-        users = users.plus(User(name, surname))
+        users = users + User(name, surname)
     }
 
     override fun unregisterUser(user: User) {
-        val deletedUser = users.find { it == user }
-        if (deletedUser == null || users.isEmpty()) {
-            logger.fatal("Attempt to delete a non-existent user ${user.name} ${user.surname}")
-            throw IllegalArgumentException("User does not exist")
-        } else {
-            logger.info("Successful user creation ${deletedUser.name} ${deletedUser.surname}")
-            users = users.minus(deletedUser)
+        if (users.isEmpty()) {
+            logger.error("User list is Empty")
+            throw IndexOutOfBoundsException("User list is Empty")
         }
+        val deletedUser = users.find { it == user }
+        if (deletedUser == null) {
+            logger.error("Attempt to delete a non-existent user ${user.name} ${user.surname}")
+            throw IllegalStateException("User does not exist")
+        }
+        logger.info("Successful user creation ${deletedUser.name} ${deletedUser.surname}")
+        users = users - deletedUser
     }
 
     override fun setBookStatus(book: Book, status: Status) {
-        if (status.javaClass == Status.UsedBy(User("", "")).javaClass) {
-            status as Status.UsedBy
-            if (users.find { it == status.user } == null || users.isEmpty()) {
-                logger.fatal("An attempt to set the status to a non-existing user ${status.user.name} ${status.user.surname}")
-                throw IllegalArgumentException("User does not exists")
+        if (status is Status.UsedBy) {
+            if (users.isEmpty()) {
+                logger.error("User list is Empty")
+                throw IndexOutOfBoundsException("User list is Empty")
+            }
+            if (users.find { it == status.user } == null) {
+                logger.error("An attempt to set the status to a non-existing user ${status.user.name} ${status.user.surname}")
+                throw IllegalStateException("User does not exists")
             }
         }
-        if (mutBookStatus.keys.find { it == book } == null || mutBookStatus.isEmpty()) {
-            logger.fatal("Attempting to set the status of a non-existent book ${book.bookId} ${book.name}")
-            throw IllegalArgumentException("Book does not exists")
-        } else {
-            logger.info("Successful status setting")
-            mutBookStatus[book] = status
+        if (mutBookStatus.isEmpty()) {
+            logger.error("Book list is Empty")
+            throw IndexOutOfBoundsException("Book does not exists")
         }
+        if (mutBookStatus.keys.find { it == book } == null) {
+            logger.error("Attempting to set the status of a non-existent book ${book.bookId} ${book.name}")
+            throw IllegalStateException("Book does not exists")
+        }
+        logger.info("Successful status setting")
+        mutBookStatus[book] = status
     }
 
     override fun addBook(book: Book, status: Status) {
-        if (status.javaClass == Status.UsedBy(User("", "")).javaClass) {
-            status as Status.UsedBy
+        if (status is Status.UsedBy) {
             if (users.find { it == status.user } == null) {
-                logger.fatal("An attempt to set the status to a non-existing user ${status.user.name} ${status.user.surname}")
-                throw IllegalArgumentException("User does not exists")
+                logger.error("An attempt to set the status to a non-existing user ${status.user.name} ${status.user.surname}")
+                throw IllegalStateException("User does not exists")
             }
         }
         if (mutBookStatus.keys.find { it == book } != null) {
-            logger.fatal("Trying to create an existing book ${book.bookId} ${book.name}")
-            throw IllegalArgumentException("Book already exists")
+            logger.error("Trying to create an existing book ${book.bookId} ${book.name}")
+            throw IllegalStateException("Book already exists")
         } else {
             logger.info("Successful book creation ${book.bookId} ${book.name}")
             mutBookStatus[book] = status
@@ -101,17 +109,21 @@ class Library : LibraryService {
     }
 
     override fun takeBook(user: User, book: Book) {
-        if (mutBookStatus.keys.find { it == book } == null || users.find { it == user } == null || users.isEmpty() || mutBookStatus.isEmpty()) {
-            logger.fatal("Book lending is not possible.")
-            throw IllegalArgumentException("Book or user does not exists")
+        if (users.isEmpty() || mutBookStatus.isEmpty()) {
+            logger.error("Book or user list is Empty")
+            throw IndexOutOfBoundsException("Book or user list is Empty")
         }
-        if (mutBookStatus.keys.find { it == book }!!.javaClass == Status.Available.javaClass) {
-            logger.fatal("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
-            throw IllegalArgumentException("Book not available")
+        if (mutBookStatus.keys.find { it == book } == null || users.find { it == user } == null) {
+            logger.error("Book lending is not possible.")
+            throw IllegalStateException("Book or user does not exists")
+        }
+        if (mutBookStatus[book] != Status.Available) {
+            logger.error("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
+            throw IllegalStateException("Book not available")
         }
         if (mutBookUsers.filter { it.value == user }.count() >= 3) {
-            logger.fatal("Book lending is not possible.User has too many books ${user.name} ${user.surname}")
-            throw IllegalArgumentException("User has too many books")
+            logger.error("Book lending is not possible.User has too many books ${user.name} ${user.surname}")
+            throw IllegalStateException("User has too many books")
         }
         logger.info("Successful return of the book ${book.bookId} ${book.name}")
         mutBookUsers[book] = user
@@ -119,25 +131,33 @@ class Library : LibraryService {
     }
 
     override fun sendForRestoration(book: Book) {
-        if (mutBookStatus.keys.find { it == book } == null || mutBookStatus.isEmpty()) {
-            logger.fatal("Book restoration is not possible.Book does not exists")
-            throw IllegalArgumentException("Book does not exists")
+        if (mutBookStatus.isEmpty()) {
+            logger.error("Book list is Empty")
+            throw IndexOutOfBoundsException("Book does not exists")
         }
-        if (mutBookStatus.keys.find { it == book }!!.javaClass == Status.Available.javaClass) {
-            logger.fatal("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
-            throw IllegalArgumentException("Book not available")
+        if (mutBookStatus.keys.find { it == book } == null) {
+            logger.error("Book restoration is not possible.Book does not exists")
+            throw IllegalStateException("Book does not exists")
+        }
+        if (mutBookStatus[book] != Status.Available) {
+            logger.error("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
+            throw IllegalStateException("Book not available")
         }
         mutBookStatus[book] = Status.Restoration
     }
 
     override fun bookWillBePublished(book: Book) {
-        if (mutBookStatus.keys.find { it == book } == null || mutBookStatus.isEmpty()) {
-            logger.fatal("Book publish is not possible.Book does not exists")
-            throw IllegalArgumentException("Book does not exists")
+        if (mutBookStatus.isEmpty()) {
+            logger.error("Book list is Empty")
+            throw IndexOutOfBoundsException("Book does not exists")
         }
-        if (mutBookStatus.keys.find { it == book }!!.javaClass == Status.Available.javaClass) {
-            logger.fatal("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
-            throw IllegalArgumentException("Book not available")
+        if (mutBookStatus.keys.find { it == book } == null) {
+            logger.error("Book publish is not possible.Book does not exists")
+            throw IllegalStateException("Book does not exists")
+        }
+        if (mutBookStatus[book] != Status.Available) {
+            logger.error("Book lending is not possible.Book not available ${mutBookStatus[book].toString()}")
+            throw IllegalStateException("Book not available")
         }
         mutBookStatus[book] = Status.ComingSoon
     }
@@ -145,12 +165,12 @@ class Library : LibraryService {
     override fun returnBook(book: Book) {
         val usedBook = mutBookStatus.keys.find { it == book }
         if (usedBook == null) {
-            logger.fatal("Book return is not possible.Book does not exists")
-            throw IllegalArgumentException("Book does not exists")
+            logger.error("Book return is not possible.Book does not exists")
+            throw IllegalStateException("Book does not exists")
         }
-        if (mutBookStatus[usedBook]!!.javaClass == Status.Available.javaClass) {
-            logger.fatal("Book return is not possible.Book already available ${mutBookStatus[book].toString()}")
-            throw IllegalArgumentException("The book already available")
+        if (mutBookStatus[usedBook] == Status.Available) {
+            logger.error("Book return is not possible.Book already available ${mutBookStatus[book].toString()}")
+            throw IllegalStateException("The book already available")
         }
         if (mutBookUsers[book] != null)
             mutBookUsers = mutBookUsers.minus(book) as MutableMap<Book, User>
@@ -188,10 +208,10 @@ class Library : LibraryService {
     }
 
     override fun getAllAvailableBooks(): List<Book> {
-        if (mutBookStatus.filter { it.value.javaClass == Status.Available.javaClass }.isEmpty()) {
+        if (mutBookStatus.filter { it.value == Status.Available }.isEmpty()) {
             logger.warn("No books available")
         }
-        return mutBookStatus.filter { it.value.javaClass == Status.Available.javaClass }.keys.toList()
+        return mutBookStatus.filter { it.value == Status.Available }.keys.toList()
     }
 
     override fun getBookStatus(book: Book): Status {
