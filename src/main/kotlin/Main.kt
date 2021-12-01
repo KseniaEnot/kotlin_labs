@@ -1,112 +1,23 @@
-import task5_LibraryService.*
-import java.time.Year
+import task6_ShapeCollector.*
 
 fun main() {
-    println("Task5")
-    testTask5()
-}
-
-fun testTask5() {
-    val library = Library()
-    library.addBook(
-        Book(
-            "To Kill a Mockingbird",
-            Genre.Gothic,
-            Author("Lee", "Harper"),
-            Year.of(1960),
-            1
-        )
-    )
-    library.addBook(
-        Book(
-            "It",
-            Genre.Novel,
-            Author("Stephen", "King"),
-            Year.of(1986),
-            2
-        )
-    )
-    library.addBook(
-        Book(
-            "Dandelion Wine",
-            Genre.Novel,
-            Author("Ray", "Bradbury"),
-            Year.of(1957),
-            3
-        )
-    )
-    library.addBook(
-        Book(
-            "Coraline",
-            Genre.Horror,
-            Author("Neil", "Gaiman"),
-            Year.of(2002),
-            4
-        )
-    )
-    library.registerUser("Andrey", "Arhipov")
-    library.registerUser("Nikolai", "Serov")
-    library.registerUser("Veronika", "Grigoryan")
-    library.unregisterUser(User("Nikolai", "Serov"))
-    library.bookWillBePublished(
-        Book(
-            "Coraline",
-            Genre.Horror,
-            Author("Neil", "Gaiman"),
-            Year.of(2002),
-            4
-        )
-    )
-    library.sendForRestoration(
-        Book(
-            "Dandelion Wine",
-            Genre.Novel,
-            Author("Ray", "Bradbury"),
-            Year.of(1957),
-            3
-        )
-    )
-    library.setBookStatus(
-        Book(
-            "It",
-            Genre.Novel,
-            Author("Stephen", "King"),
-            Year.of(1986),
-            2
-        ), Status.Available
-    )
-    library.takeBook(
-        User("Andrey", "Arhipov"), Book(
-            "It",
-            Genre.Novel,
-            Author("Stephen", "King"),
-            Year.of(1986),
-            2
-        )
-    )
-    library.returnBook(
-        Book(
-            "Dandelion Wine",
-            Genre.Novel,
-            Author("Ray", "Bradbury"),
-            Year.of(1957),
-            3
-        )
-    )
-    println("Books substring It")
-    for (it in library.findBooks("It")) {
+    println("Task6")
+    val collector = ShapeCollector<Shape>()
+    collector.add(Circle(5.0))
+    collector.add(Square(4.0))
+    collector.add(Triangle(3.0, 4.0, 5.0))
+    collector.add(Circle(10.0))
+    collector.add(Circle(8.0))
+    collector.addAll(listOf(Circle(8.0), Triangle(3.0, 4.0, 3.0)))
+    println("All Collector: ")
+    for (it in collector.getAll())
         println(it.toString())
-    }
-    println("Books Genre = Novel")
-    for (it in library.findBooks(Genre.Novel)) {
+    println("Sorted Collector: ")
+    for (it in collector.getAllSorted(ShapeComparators.byDescendPerimeter))
         println(it.toString())
-    }
-    println("Available books")
-    for (it in library.getAllAvailableBooks()) {
+    val collector2 = ShapeCollector<Circle>()
+    collector2.addAll(listOf(Circle(8.0), Circle(12.0), Circle(5.0), Circle(3.3)))
+    println("Sorted Circle Collector: ")
+    for (it in collector2.getAllSorted(ShapeComparators.byDescendRadius))
         println(it.toString())
-    }
-    println("Statuses books")
-    for (it in library.getAllBookStatuses()) {
-        println("""${it.key} ${it.value}""")
-    }
 }
