@@ -1,23 +1,17 @@
+import task7_Serialization.*
+import task3_ShapeFactorImpl.*
 import task6_ShapeCollector.*
 
 fun main() {
-    println("Task6")
+    println("Task7")
+    val pathIn = "src\\main\\kotlin\\task7_Serialization\\TextSerializer\\in.json"
+    val pathOut = "src\\main\\kotlin\\task7_Serialization\\TextSerializer\\out.json"
     val collector = ShapeCollector<Shape>()
-    collector.add(Circle(5.0))
-    collector.add(Square(4.0))
-    collector.add(Triangle(3.0, 4.0, 5.0))
-    collector.add(Circle(10.0))
-    collector.add(Circle(8.0))
-    collector.addAll(listOf(Circle(8.0), Triangle(3.0, 4.0, 3.0)))
-    println("All Collector: ")
-    for (it in collector.getAll())
-        println(it.toString())
-    println("Sorted Collector: ")
-    for (it in collector.getAllSorted(ShapeComparators.byDescendPerimeter))
-        println(it.toString())
-    val collector2 = ShapeCollector<Circle>()
-    collector2.addAll(listOf(Circle(8.0), Circle(12.0), Circle(5.0), Circle(3.3)))
-    println("Sorted Circle Collector: ")
-    for (it in collector2.getAllSorted(ShapeComparators.byDescendRadius))
-        println(it.toString())
+    val shapeImpl = ShapeFactorImpl()
+    collector.addAll(SerializersModule.decode(FileIO.fileReader(pathIn)))
+    collector.add(shapeImpl.createRandomCircle())
+    collector.add(shapeImpl.createRandomTriangle())
+    collector.add(shapeImpl.createRandomTriangle())
+    collector.add(shapeImpl.createRandomSquare())
+    FileIO.fileWriter(SerializersModule.encode(collector.getAll()), pathOut)
 }

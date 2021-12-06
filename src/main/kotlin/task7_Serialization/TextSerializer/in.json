@@ -1,0 +1,19 @@
+[
+    {
+        "type": "task3_ShapeFactorImpl.Circle",
+        "radius": 0.5
+    },
+    {
+        "type": "task3_ShapeFactorImpl.Rectangle",
+        "sideA": 2.1,
+        "sideB": 4.0
+    },
+    {
+        "type": "task3_ShapeFactorImpl.Circle",
+        "radius": 9.8
+    },
+    {
+        "type": "task3_ShapeFactorImpl.Square",
+        "sideA": 4.1
+    }
+]
