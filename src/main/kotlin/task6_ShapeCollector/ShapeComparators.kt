@@ -1,4 +1,6 @@
 package task6_ShapeCollector
+import task3_ShapeFactorImpl.Shape
+import task3_ShapeFactorImpl.Circle
 
 object ShapeComparators {
     val byAscendPerimeter = compareBy<Shape> { it.calcPerimeter() }

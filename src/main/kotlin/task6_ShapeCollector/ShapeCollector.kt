@@ -1,5 +1,7 @@
 package task6_ShapeCollector
 
+import task3_ShapeFactorImpl.Shape
+
 class ShapeCollector<T>
         where T : Shape {
     private val allShapes = mutableListOf<T>()
@@ -12,11 +14,9 @@ class ShapeCollector<T>
     }
 
     fun getAll(): List<T> {
-        val returnAllShapes = mutableListOf<T>()
-        for (it in allShapes)
-            returnAllShapes.add(it)
-        return returnAllShapes
+        return allShapes.toList()
     }
+
 
     fun getAllSorted(comparator: Comparator<in T>): List<T> {
         return allShapes.sortedWith(comparator)

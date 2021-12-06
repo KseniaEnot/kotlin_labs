@@ -1,5 +1,5 @@
 package task3_ShapeFactorImpl
-
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
@@ -8,7 +8,7 @@ interface Shape {
     fun calcArea(): Double
     fun calcPerimeter(): Double
 }
-
+@Serializable
 class Circle(val radius: Double) : Shape {
     init {
         if (radius <= 0)
@@ -22,8 +22,12 @@ class Circle(val radius: Double) : Shape {
     override fun calcPerimeter(): Double {
         return 2 * Math.PI * radius
     }
-}
 
+    override fun toString(): String {
+        return "Circle(radius=$radius)"
+    }
+}
+@Serializable
 class Square(val sideA: Double) : Shape {
     init {
         if (sideA <= 0)
@@ -37,8 +41,12 @@ class Square(val sideA: Double) : Shape {
     override fun calcPerimeter(): Double {
         return 4 * sideA
     }
-}
 
+    override fun toString(): String {
+        return "Square(sideA=$sideA)"
+    }
+}
+@Serializable
 class Rectangle(val sideA: Double, val sideB: Double) : Shape {
     init {
         if (sideA <= 0 || sideB <= 0)
@@ -52,8 +60,12 @@ class Rectangle(val sideA: Double, val sideB: Double) : Shape {
     override fun calcPerimeter(): Double {
         return 2 * (sideA + sideB)
     }
-}
 
+    override fun toString(): String {
+        return "Rectangle(sideA=$sideA, sideB=$sideB)"
+    }
+}
+@Serializable
 class Triangle(val sideA: Double, val sideB: Double, val sideC: Double) : Shape {
     init {
         if (sideA <= 0 || sideB <= 0 || sideC <= 0 ||
@@ -71,6 +83,10 @@ class Triangle(val sideA: Double, val sideB: Double, val sideC: Double) : Shape 
 
     override fun calcPerimeter(): Double {
         return sideA + sideB + sideC
+    }
+
+    override fun toString(): String {
+        return "Triangle(sideA=$sideA, sideB=$sideB, sideC=$sideC)"
     }
 }
 
